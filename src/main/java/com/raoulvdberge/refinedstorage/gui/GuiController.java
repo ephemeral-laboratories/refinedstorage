@@ -1,5 +1,6 @@
 package com.raoulvdberge.refinedstorage.gui;
 
+import com.raoulvdberge.refinedstorage.apiimpl.API;
 import com.raoulvdberge.refinedstorage.container.ContainerController;
 import com.raoulvdberge.refinedstorage.gui.control.Scrollbar;
 import com.raoulvdberge.refinedstorage.gui.control.SideButtonRedstoneMode;
@@ -81,7 +82,7 @@ public class GuiController extends GuiBase {
                 GlStateManager.scale(scale, scale, 1);
 
                 drawString(RenderUtils.getOffsetOnScale(x + 1, scale), RenderUtils.getOffsetOnScale(y - 2, scale), trimNameIfNeeded(!fontRenderer.getUnicodeFlag(), node.getStack().getDisplayName()));
-                drawString(RenderUtils.getOffsetOnScale(x + 21, scale), RenderUtils.getOffsetOnScale(y + 10, scale), node.getAmount() + "x");
+                drawString(RenderUtils.getOffsetOnScale(x + 21, scale), RenderUtils.getOffsetOnScale(y + 10, scale), API.instance().getQuantityFormatter().format(node.getAmount()) + "x");
 
                 GlStateManager.popMatrix();
 

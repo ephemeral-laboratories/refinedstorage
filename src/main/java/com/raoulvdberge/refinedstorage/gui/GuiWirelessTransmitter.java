@@ -1,5 +1,6 @@
 package com.raoulvdberge.refinedstorage.gui;
 
+import com.raoulvdberge.refinedstorage.apiimpl.API;
 import com.raoulvdberge.refinedstorage.container.ContainerWirelessTransmitter;
 import com.raoulvdberge.refinedstorage.gui.control.SideButtonRedstoneMode;
 import com.raoulvdberge.refinedstorage.tile.TileWirelessTransmitter;
@@ -28,7 +29,7 @@ public class GuiWirelessTransmitter extends GuiBase {
     @Override
     public void drawForeground(int mouseX, int mouseY) {
         drawString(7, 7, t("gui.refinedstorage:wireless_transmitter"));
-        drawString(28, 25, t("gui.refinedstorage:wireless_transmitter.distance", TileWirelessTransmitter.RANGE.getValue()));
+        drawString(28, 25, t("gui.refinedstorage:wireless_transmitter.distance", API.instance().getQuantityFormatter().format(TileWirelessTransmitter.RANGE.getValue())));
         drawString(7, 43, t("container.inventory"));
     }
 }

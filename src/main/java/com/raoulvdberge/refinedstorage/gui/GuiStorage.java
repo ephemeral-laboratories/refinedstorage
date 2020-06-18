@@ -94,13 +94,15 @@ public class GuiStorage extends GuiBase {
             int full = 0;
 
             if (gui.getCapacity() >= 0) {
-                full = (int) ((float) gui.getStored() / (float) gui.getCapacity() * 100f);
+                full = (int) ((float) gui.getStored() / (float) gui.getCapacity() * 144f);
             }
+
+            String fullString = API.instance().getQuantityFormatter().format(full);
 
             drawTooltip(mouseX, mouseY, (gui.getCapacity() == -1 ?
                 t("misc.refinedstorage:storage.stored_minimal", API.instance().getQuantityFormatter().format(gui.getStored())) :
                 t("misc.refinedstorage:storage.stored_capacity_minimal", API.instance().getQuantityFormatter().format(gui.getStored()), API.instance().getQuantityFormatter().format(gui.getCapacity()))
-            ) + "\n" + TextFormatting.GRAY + t("misc.refinedstorage:storage.full", full));
+            ) + "\n" + TextFormatting.GRAY + t("misc.refinedstorage:storage.full", fullString));
         }
     }
 

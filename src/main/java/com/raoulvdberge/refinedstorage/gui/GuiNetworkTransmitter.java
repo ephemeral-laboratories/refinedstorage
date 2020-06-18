@@ -1,5 +1,6 @@
 package com.raoulvdberge.refinedstorage.gui;
 
+import com.raoulvdberge.refinedstorage.apiimpl.API;
 import com.raoulvdberge.refinedstorage.container.ContainerNetworkTransmitter;
 import com.raoulvdberge.refinedstorage.gui.control.SideButtonRedstoneMode;
 import com.raoulvdberge.refinedstorage.tile.TileNetworkTransmitter;
@@ -38,9 +39,9 @@ public class GuiNetworkTransmitter extends GuiBase {
         if (networkTransmitter.getNode().getNetworkCard().getStackInSlot(0).isEmpty()) {
             distance = t("gui.refinedstorage:network_transmitter.missing_card");
         } else if (TileNetworkTransmitter.RECEIVER_DIMENSION.getValue() != networkTransmitter.getWorld().provider.getDimension()) {
-            distance = t("gui.refinedstorage:network_transmitter.dimension", TileNetworkTransmitter.RECEIVER_DIMENSION.getValue());
+            distance = t("gui.refinedstorage:network_transmitter.dimension", API.instance().getQuantityFormatter().format(TileNetworkTransmitter.RECEIVER_DIMENSION.getValue()));
         } else if (TileNetworkTransmitter.DISTANCE.getValue() != -1) {
-            distance = t("gui.refinedstorage:network_transmitter.distance", TileNetworkTransmitter.DISTANCE.getValue());
+            distance = t("gui.refinedstorage:network_transmitter.distance", API.instance().getQuantityFormatter().format(TileNetworkTransmitter.DISTANCE.getValue()));
         } else {
             distance = t("gui.refinedstorage:network_transmitter.missing_card");
         }

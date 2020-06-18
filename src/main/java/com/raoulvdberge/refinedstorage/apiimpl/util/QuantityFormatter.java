@@ -5,17 +5,19 @@ import com.raoulvdberge.refinedstorage.apiimpl.API;
 import net.minecraftforge.fluids.Fluid;
 
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.Locale;
+import java.text.NumberFormat;
 
 public class QuantityFormatter implements IQuantityFormatter {
-    private DecimalFormat formatterWithUnits = new DecimalFormat("####0.#", DecimalFormatSymbols.getInstance(Locale.US));
-    private DecimalFormat formatter = new DecimalFormat("#,###", DecimalFormatSymbols.getInstance(Locale.US));
-    private DecimalFormat bucketFormatter = new DecimalFormat("####0.###", DecimalFormatSymbols.getInstance(Locale.US));
+    private final NumberFormat formatterWithUnits = NumberFormat.getNumberInstance();
+    private final NumberFormat formatter = NumberFormat.getIntegerInstance();
+    private final NumberFormat formatterWithoutGrouping = NumberFormat.getIntegerInstance();
+    private final NumberFormat bucketFormatter = NumberFormat.getNumberInstance();
 
     public QuantityFormatter() {
+        formatterWithUnits.setMaximumFractionDigits(1);
         formatterWithUnits.setRoundingMode(RoundingMode.DOWN);
+        formatterWithoutGrouping.setGroupingUsed(false);
+        bucketFormatter.setMaximumFractionDigits(3);
     }
 
     @Override
@@ -25,27 +27,35 @@ public class QuantityFormatter implements IQuantityFormatter {
 
     @Override
     public String formatWithUnits(long qty) {
-        if (qty >= 1_000_000_000) {
-            return formatterWithUnits.format(Math.round((float) qty / 1_000_000_000)) + "B";
-        } else if (qty >= 1_000_000) {
-            float qtyShort = (float) qty / 1_000_000F;
-
-            if (qty >= 100_000_000) {
-                qtyShort = Math.round(qtyShort); // XXX.XM looks weird.
-            }
-
-            return formatterWithUnits.format(qtyShort) + "M";
-        } else if (qty >= 1000) {
-            float qtyShort = (float) qty / 1000F;
-
-            if (qty >= 100_000) {
-                qtyShort = Math.round(qtyShort); // XXX.XK looks weird.
-            }
-
-            return formatterWithUnits.format(qtyShort) + "K";
+        if (qty >= (12*12*12)) {
+            int exp = (int) (Math.log(qty) / Math.log(12));
+            float qtyShort = (float) (qty / Math.pow(12, exp));
+            return formatterWithUnits.format(qtyShort) + " " + exponentToAbbreviation(exp);
         }
 
-        return String.valueOf(qty);
+        return formatter.format(qty);
+    }
+
+    private String exponentToAbbreviation(int exponent) {
+        String numeric = formatterWithoutGrouping.format(exponent);
+        char[] chars = numeric.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            switch (chars[i]) {
+                case '0': chars[i] = 'n'; break;
+                case '1': chars[i] = 'u'; break;
+                case '2': chars[i] = 'b'; break;
+                case '3': chars[i] = 't'; break;
+                case '4': chars[i] = 'q'; break;
+                case '5': chars[i] = 'p'; break;
+                case '6': chars[i] = 'h'; break;
+                case '7': chars[i] = 's'; break;
+                case '8': chars[i] = 'o'; break;
+                case '9': chars[i] = 'e'; break;
+                case '\u218A': chars[i] = 'd'; break;
+                case '\u218B': chars[i] = 'l'; break;
+            }
+        }
+        return String.valueOf(chars);
     }
 
     @Override
@@ -71,7 +81,7 @@ public class QuantityFormatter implements IQuantityFormatter {
         if (amount >= 1) {
             return API.instance().getQuantityFormatter().formatWithUnits(amount);
         } else {
-            return String.format("%.1f", amountRaw);
+            return formatterWithUnits.format(amountRaw);
         }
     }
 }
